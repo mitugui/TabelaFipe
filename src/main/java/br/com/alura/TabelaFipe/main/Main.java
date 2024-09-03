@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     private final Scanner reading = new Scanner(System.in);
@@ -55,11 +56,21 @@ public class Main {
 
         json = apiConsumption.getData(address);
 
-        System.out.println("Modelos dessa marca:");
+        System.out.println("** Modelos dessa marca:");
         var brandModels = dataConverter.getData(json, BrandModels.class);
         brandModels.models().stream()
                 .sorted(Comparator.comparing(Data::name))
                 .forEach(System.out::println);
+
+        System.out.println("\n*** Digite um trecho do nome do carro a ser buscado:");
+        var vehicleName = reading.nextLine();
+
+        List<Data> filteredModels = brandModels.models().stream()
+                .filter(m -> m.name().toUpperCase().contains(vehicleName.toUpperCase()))
+                .collect(Collectors.toList());
+
+        System.out.println("** Modelos filtrados:");
+        filteredModels.forEach(System.out::println);
 
         System.out.println("\n*** Digite o código do modelo para consultar valores:");
         var modelCode = reading.nextLine();
