@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -85,13 +86,21 @@ public class Main {
         List<Data> searchedModelWithDifferentYears = dataConverter.getListData(json, Data.class);
 
         List<String> modelYears = searchedModelWithDifferentYears.stream()
+                .filter(s -> s.code().length() <= 6)
                 .map(Data::code)
                 .toList();
+
+        List<Vehicle> vehicles = new ArrayList<>();
 
         for (String year : modelYears) {
             json = apiConsumption.getData(address + "/" + year);
             Vehicle vehicle = dataConverter.getData(json, Vehicle.class);
-            System.out.println("\n"+ vehicle);
+            vehicles.add(vehicle);
+        }
+
+        System.out.print("\n** Todos os veículos encontrados com avaliações por ano:");
+        for (Vehicle v : vehicles) {
+            System.out.println("\n" + v);
         }
     }
 }
